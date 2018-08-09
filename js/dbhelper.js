@@ -13,6 +13,16 @@ class DBHelper {
   }
 
   /**
+   * Fetch all restaurants using FetchAPI
+   */
+  static fetchRestaurantsFetch() {
+    let response = fetch(`http://localhost:1337/restaurants`)
+                    .then(res => res.json())
+                    .catch(err => console.log(err));
+    console.log(response);
+  }
+
+  /**
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {

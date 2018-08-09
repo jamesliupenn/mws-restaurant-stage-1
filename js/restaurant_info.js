@@ -22,7 +22,7 @@ initMap = () => {
         scrollWheelZoom: false
       });
       L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.jpg70?access_token={mapboxToken}', {
-        mapboxToken: '<your MAPBOX API KEY HERE>',
+        mapboxToken: '<API_token>',
         maxZoom: 18,
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
           '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
@@ -110,8 +110,19 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
     const row = document.createElement('tr');
 
     const day = document.createElement('td');
-    day.innerHTML = key;
+    // Create spans within the td element
+    const longName = document.createElement('span');
+    const shortName = document.createElement('span');
+    // Set the id for the added spans
+    longName.setAttribute('id', 'longName');
+    shortName.setAttribute('id', 'shortName');
+    // Assign the HTML values
+    longName.innerHTML = key;
+    shortName.innerHTML = key.slice(0,3); // Abbreviation
+    // Append into the structure  
     row.appendChild(day);
+    day.appendChild(longName);
+    day.appendChild(shortName);
 
     const time = document.createElement('td');
     time.innerHTML = operatingHours[key];
@@ -127,6 +138,7 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
 fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
+  title.setAttribute('id', 'reviews-title');
   title.innerHTML = 'Reviews';
   container.appendChild(title);
 
@@ -150,18 +162,26 @@ createReviewHTML = (review) => {
   const li = document.createElement('li');
   const name = document.createElement('p');
   name.innerHTML = review.name;
+  // Set the ID attribute for the name
+  name.setAttribute('id', 'reviewer-name');
   li.appendChild(name);
 
   const date = document.createElement('p');
   date.innerHTML = review.date;
+  // Set the ID attribute for the date
+  date.setAttribute('id', 'reviewer-date');
   li.appendChild(date);
 
   const rating = document.createElement('p');
   rating.innerHTML = `Rating: ${review.rating}`;
+  // Set the ID attribute for the rating
+  rating.setAttribute('id', 'reviewer-rating');
   li.appendChild(rating);
 
   const comments = document.createElement('p');
   comments.innerHTML = review.comments;
+  // Set the ID attribute for the comments
+  comments.setAttribute('id', 'reviewer-comments');
   li.appendChild(comments);
 
   return li;
