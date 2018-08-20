@@ -25,26 +25,36 @@ const cacheName = 'restaurant-cache-v1';
 
 
 // Listen for install event
-self.addEventListener('install', function(event) {
-    // Open a cache and add all the specified files 
-    event.waitUntil(
-    	caches.open(cacheName).then(function(cache) {
-    		return cache.addAll(urlsToCache);
-    	})
-    );
+self.addEventListener('install', event => {
+	// Kick out the current active worker and activate asap
+	self.skipWaiting();
+	// Open a cache and add all the specified files 
+	event.waitUntil(
+		caches.open(cacheName).then(cache => {
+			return cache.addAll(urlsToCache);
+		})
+	);
 });
 
-self.addEventListener('activate', function(event) {
-  // Perform some task
-  console.log('activating');
+self.addEventListener('activate', event => {
+	event.waitUntil(
+		caches.keys().then(keys => Promise.all(
+			keys.map(key => {
+				if (!expectedCaches.includes(key)) {
+					return caches.delete(key);
+				}
+			})
+		)).then(() => {
+			console.log('Ready to handle fetches');
+		})
+	);
 });
 
-self.addEventListener('fetch', function(event) {
+// Fetch cache
+self.addEventListener('fetch', event => {
 	event.respondWith(
-		caches.match(event.request).then(function(response) {
-			if (response)
-				return response;
-			return fetch(event.request);
+		caches.match(event.request).then(response => {
+			return response || fetch(event.request);
 		})
 	);
 });
