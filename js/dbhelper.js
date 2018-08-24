@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Common database helper functions.
  */
@@ -13,33 +14,39 @@ class DBHelper {
   }
 
   /**
-   * Fetch all restaurants using FetchAPI
+   * Fetch all restaurants using Fetch API
    */
-  static fetchRestaurantsFetch() {
-    let response = fetch(`http://localhost:1337/restaurants`)
-                    .then(res => res.json())
-                    .catch(err => console.log(err));
-    console.log(response);
+  static fetchRestaurants(callback) {
+    fetch(`http://localhost:1337/restaurants`)
+      .then((res) => {
+        res.json()
+          .then((restaurants) => {
+            return callback(null, restaurants);
+          });
+      })
+      .catch((err) => {
+        return Promise.reject(Error(err));
+      });
   }
 
   /**
    * Fetch all restaurants.
    */
-  static fetchRestaurants(callback) {
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', DBHelper.DATABASE_URL);
-    xhr.onload = () => {
-      if (xhr.status === 200) { // Got a success response from server!
-        const json = JSON.parse(xhr.responseText);
-        const restaurants = json.restaurants;
-        callback(null, restaurants);
-      } else { // Oops!. Got an error from server.
-        const error = (`Request failed. Returned status of ${xhr.status}`);
-        callback(error, null);
-      }
-    };
-    xhr.send();
-  }
+  // static fetchRestaurants(callback) {
+  //   let xhr = new XMLHttpRequest();
+  //   xhr.open('GET', DBHelper.DATABASE_URL);
+  //   xhr.onload = () => {
+  //     if (xhr.status === 200) { // Got a success response from server!
+  //       const json = JSON.parse(xhr.responseText);
+  //       const restaurants = json.restaurants;
+  //       callback(null, restaurants);
+  //     } else { // Oops!. Got an error from server.
+  //       const error = (`Request failed. Returned status of ${xhr.status}`);
+  //       callback(error, null);
+  //     }
+  //   };
+  //   xhr.send();
+  // }
 
   /**
    * Fetch a restaurant by its ID.
@@ -101,7 +108,7 @@ class DBHelper {
       if (error) {
         callback(error, null);
       } else {
-        let results = restaurants
+        let results = restaurants;
         if (cuisine != 'all') { // filter by cuisine
           results = results.filter(r => r.cuisine_type == cuisine);
         }
@@ -160,20 +167,20 @@ class DBHelper {
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
-    return (`/img/${restaurant.photograph}`);
+    return (`/img/${restaurant.photograph}.jpg`);
   }
 
   /**
    * Map marker for a restaurant.
    */
-   static mapMarkerForRestaurant(restaurant, map) {
-    // https://leafletjs.com/reference-1.3.0.html#marker  
+  static mapMarkerForRestaurant(restaurant, map) {
+  // https://leafletjs.com/reference-1.3.0.html#marker  
     const marker = new L.marker([restaurant.latlng.lat, restaurant.latlng.lng],
-      {title: restaurant.name,
-      alt: restaurant.name,
-      url: DBHelper.urlForRestaurant(restaurant)
+      { title: restaurant.name,
+        alt: restaurant.name,
+        url: DBHelper.urlForRestaurant(restaurant)
       })
-      marker.addTo(newMap);
+    marker.addTo(newMap);
     return marker;
   } 
   /* static mapMarkerForRestaurant(restaurant, map) {

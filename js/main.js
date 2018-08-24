@@ -1,3 +1,4 @@
+/* eslint-disable */
 let restaurants,
   neighborhoods,
   cuisines;
@@ -10,12 +11,12 @@ var markers = [];
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/serviceWorker.js')
-  .then((registration) => {
-    console.log('Registration successful, scope is:', registration.scope);
-  })
-  .catch((error) => {
-    console.log('Service worker registration failed, error:', error);
-  });
+    .then((registration) => {
+      console.log('Registration successful, scope is:', registration.scope);
+    })
+    .catch((error) => {
+      console.log('Service worker registration failed, error:', error);
+    });
 }
 
 /**
@@ -25,8 +26,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
   initMap(); // added 
   fetchNeighborhoods();
   fetchCuisines();
-  DBHelper.fetchRestaurantsFetch();
+  // fetchAllRestaurants();
 });
+
+// fetchAllRestaurants = () => {
+//   DBHelper.fetchAllRestaurants();
+// }
 
 /**
  * Fetch all neighborhoods and set their HTML.
@@ -88,10 +93,10 @@ fillCuisinesHTML = (cuisines = self.cuisines) => {
  */
 initMap = () => {
   self.newMap = L.map('map', {
-        center: [40.722216, -73.987501],
-        zoom: 12,
-        scrollWheelZoom: false
-      });
+    center: [40.722216, -73.987501],
+    zoom: 12,
+    scrollWheelZoom: false
+  });
   L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.jpg70?access_token={mapboxToken}', {
     mapboxToken: '<map_token>',
     maxZoom: 18,
@@ -208,7 +213,7 @@ addMarkersToMap = (restaurants = self.restaurants) => {
   restaurants.forEach(restaurant => {
     // Add marker to the map
     const marker = DBHelper.mapMarkerForRestaurant(restaurant, self.newMap);
-    marker.on("click", onClick);
+    marker.on('click', onClick);
     function onClick() {
       window.location.href = marker.options.url;
     }

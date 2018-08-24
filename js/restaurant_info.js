@@ -1,3 +1,4 @@
+/* eslint-disable */
 let restaurant;
 var newMap;
 
@@ -7,12 +8,12 @@ var newMap;
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/serviceWorker.js')
-  .then((registration) => {
-    console.log('Registration successful, scope is:', registration.scope);
-  })
-  .catch((error) => {
-    console.log('Service worker registration failed, error:', error);
-  });
+    .then((registration) => {
+      console.log('Registration successful, scope is:', registration.scope);
+    })
+    .catch((error) => {
+      console.log('Service worker registration failed, error:', error);
+    });
 }
 
 
