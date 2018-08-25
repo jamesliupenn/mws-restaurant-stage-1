@@ -1,11 +1,14 @@
 /*eslint-env node */
 
-var gulp = require('gulp');
-var sass = require('gulp-sass');
-var autoprefixer = require('gulp-autoprefixer');
-var browserSync = require('browser-sync').create();
-var eslint = require('gulp-eslint');
-var jasmine = require('gulp-jasmine-phantom');
+const gulp = require('gulp');
+const sass = require('gulp-sass');
+const autoprefixer = require('gulp-autoprefixer');
+const browserSync = require('browser-sync').create();
+const eslint = require('gulp-eslint');
+const jasmine = require('gulp-jasmine-phantom');
+const imagemin = require('gulp-imagemin');
+const imageResize = require('gulp-image-resize');
+const rename = require('gulp-rename');
 
 gulp.task('default', ['styles', 'lint'], function() {
 	// Watches the sass folder for any scss file changes, if change,
@@ -36,7 +39,28 @@ gulp.task('styles', function() {
 		// Save the gulp into css
 		.pipe(gulp.dest('./css'))
 		.pipe(browserSync.stream());
+});
 
+// The image compression task - imageMagick required (brew install imageMagick)
+gulp.task('image', function() {
+	gulp.src('img/*')
+	// Create progressive jpeg for a smaller width
+		.pipe(imagemin([imagemin.jpegtran({progressive: true})]))
+		.pipe(imageResize({
+			width: 400,
+			imageMagick: true
+		}))
+		.pipe(rename(function(path){
+			path.basename += '-400';
+		}))
+		.pipe(gulp.dest('imagemin-img'));
+	// Create progressive jpeg for original width
+	gulp.src('img/*')
+		.pipe(imagemin([imagemin.jpegtran({progressive: true})]))
+		.pipe(rename(function(path){
+			path.basename += '-800';
+		}))
+		.pipe(gulp.dest('imagemin-img'));
 });
 
 gulp.task('test', function() {
