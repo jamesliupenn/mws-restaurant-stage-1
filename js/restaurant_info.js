@@ -47,6 +47,17 @@ initMap = () => {
       }).addTo(newMap);
       fillBreadcrumb();
       DBHelper.mapMarkerForRestaurant(self.restaurant, self.newMap);
+
+      // Set tabindex to -1 for all the map markers
+      const markers = document.getElementsByClassName('leaflet-marker-icon');
+      for (let i = 0; i < markers.length; i++) {
+        markers[i].setAttribute('tabindex', '-1');
+      }
+      // Set tabindex to -1 for zoom controls
+      const zoomin = document.getElementsByClassName('leaflet-control-zoom-in');
+      zoomin[0].setAttribute('tabindex', '-1');
+      const zoomout = document.getElementsByClassName('leaflet-control-zoom-out');
+      zoomout[0].setAttribute('tabindex', '-1');
     }
   });
 }  
@@ -105,8 +116,11 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   const image = document.getElementById('restaurant-img');
   image.className = 'restaurant-img'
   image.setAttribute('alt', restaurant.name);
-  image.src = DBHelper.imageUrlForRestaurant(restaurant);
-
+  image.src = DBHelper.imageUrlForRestaurant(restaurant) + '-400.jpg';
+  image.setAttribute('srcset', 
+    DBHelper.imageUrlForRestaurant(restaurant) + '-400.jpg' + ' 400w, ' +
+    DBHelper.imageUrlForRestaurant(restaurant) + '-800.jpg' + ' 800w'
+    );
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
 

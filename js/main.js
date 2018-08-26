@@ -105,7 +105,6 @@ initMap = () => {
       'Imagery © <a href="https://www.mapbox.com/" tabindex="-1">Mapbox</a>',
     id: 'mapbox.streets'
   }).addTo(newMap);
-
   updateRestaurants();
 }
 /* window.initMap = () => {
@@ -181,8 +180,11 @@ createRestaurantHTML = (restaurant) => {
   const image = document.createElement('img');
   image.className = 'restaurant-img';
   image.setAttribute('alt', restaurant.name);
-  image.src = DBHelper.imageUrlForRestaurant(restaurant);
-  // image.setAttribute('srcset', image.src + ' 500w');
+  image.src = DBHelper.imageUrlForRestaurant(restaurant) + '-400.jpg';
+  image.setAttribute('srcset', 
+    DBHelper.imageUrlForRestaurant(restaurant) + '-400.jpg' + ' 400w, ' +
+    DBHelper.imageUrlForRestaurant(restaurant) + '-800.jpg' + ' 800w'
+    );
   li.append(image);
 
   const name = document.createElement('h1');
@@ -220,6 +222,16 @@ addMarkersToMap = (restaurants = self.restaurants) => {
     self.markers.push(marker);
   });
 
+  // Set tabindex to -1 for all the map markers
+  const markers = document.getElementsByClassName('leaflet-marker-icon');
+  for (let i = 0; i < markers.length; i++) {
+    markers[i].setAttribute('tabindex', '-1');
+  }
+  // Set tabindex to -1 for zoom controls
+  const zoomin = document.getElementsByClassName('leaflet-control-zoom-in');
+  zoomin[0].setAttribute('tabindex', '-1');
+  const zoomout = document.getElementsByClassName('leaflet-control-zoom-out');
+  zoomout[0].setAttribute('tabindex', '-1');
 } 
 /* addMarkersToMap = (restaurants = self.restaurants) => {
   restaurants.forEach(restaurant => {
