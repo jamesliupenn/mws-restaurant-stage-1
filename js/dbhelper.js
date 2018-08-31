@@ -1,9 +1,15 @@
 /* eslint-disable */
+
+const idbPromise = idb.open('restaurant-db', 1, (upgradeDb) => {
+  upgradeDb.createObjectStore('restaurant-store', {
+    keyPath: 'id'
+  });
+});
+
 /**
  * Common database helper functions.
  */
 class DBHelper {
-
   /**
    * Database URL.
    * Change this to restaurants.json file location on your server.
@@ -21,15 +27,38 @@ class DBHelper {
       .then((res) => {
         res.json()
           .then((restaurants) => {
+            // Save JSON into indexedDB
+            idbPromise.then(db => {
+              const tx = db.transaction('restaurant-store', 'readwrite');
+              // Loop through the restaurant list and store in the db
+              restaurants.forEach((restaurant) => {
+                tx.objectStore('restaurant-store').put(restaurant);
+              });
+              return tx.complete;
+            });
             return callback(null, restaurants);
           })
           .catch((err) => {
             return Promise.reject(Error(err));
           });
-      })
-      .catch((err) => {
-        return Promise.reject(Error(err));
+      }).catch(()=>{
+        idbPromise.then(db => {
+          const tx = db.transaction('restaurant-store', 'readwrite');
+          return tx.objectStore('restaurant-store').getAll();
+        }).then((restaurants) => {
+          return callback(null, restaurants);
+        });
       });
+      // .catch(() => {
+      //   // If offline and no response, we want to load from indexedDB
+      //   console.log('test');
+      //   idbPromise.then(db => {
+      //     const tx = db.transaction('restaurant-store');
+      //     tx.objectStore('restaurant-store').getAll();
+      //   }).then(restaurants => {
+      //     return callback(null, restaurants);
+      //   });
+      // });
   }
 
   /**
@@ -202,4 +231,5 @@ class DBHelper {
   } */
 
 }
+
 

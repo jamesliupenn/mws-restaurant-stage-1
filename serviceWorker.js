@@ -23,6 +23,7 @@ const urlsToCache = [
 ];
 
 const cacheName = 'restaurant-cache-v1';
+const expectedCaches = ['restaurant-cache-v1'];
 
 
 // Listen for install event

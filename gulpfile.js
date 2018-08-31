@@ -7,6 +7,8 @@ const browserSync = require('browser-sync').create();
 const eslint = require('gulp-eslint');
 const jasmine = require('gulp-jasmine-phantom');
 const responsive = require('gulp-responsive');
+const imagemin = require('gulp-imagemin');
+const concat = require('gulp-concat');
 
 gulp.task('default', ['styles', 'lint'], function() {
 	// Watches the sass folder for any scss file changes, if change,
@@ -39,22 +41,31 @@ gulp.task('styles', function() {
 		.pipe(browserSync.stream());
 });
 
-// The image compression task
+// The image compression task - imagemin to make jpeg into progressive jpg
+// gulp-responsive to create 2 different image width
 gulp.task('image', function() {
 	gulp.src('img/*')
-	.pipe(responsive({ 
-		'*.jpg': [
-		{	width: 800,
-			quality: 90,
-			rename: { suffix: '-800' }
-		},
-		{	width: 400,
-			quality: 90,
-			rename: { suffix: '-400' }
-		}
-		]
-	}))
-	.pipe(gulp.dest('imagemin-img'));
+		.pipe(imagemin([imagemin.jpegtran({progressive: true})]))
+		.pipe(responsive({ 
+			'*.jpg': [
+			{	width: 800,
+				quality: 90,
+				rename: { suffix: '-800' }
+			},
+			{	width: 400,
+				quality: 90,
+				rename: { suffix: '-400' }
+			}
+			]
+		}))
+		.pipe(gulp.dest('imagemin-img'));
+});
+
+// Javascript concatenation -- currently unused
+gulp.task('scripts', function() {
+	gulp.src('js/*.js')
+		.pipe(concat('all.js'))
+		.pipe(gulp.dest('dist'));
 });
 
 gulp.task('test', function() {
