@@ -6,12 +6,5 @@
   "display": "standalone",
   "scope": "/home",
   "theme_color": "#3367D6",
-  "description": "A Yelp-like progressive web app",
-  // "icons": [
-  //   {
-  //     "src": "/images/icons-192.png",
-  //     "type": "image/png",
-  //     "sizes": "192x192"
-  //   },
-  // ],
+  "description": "A Yelp-like progressive web app"
 }

@@ -1,9 +1,14 @@
 /* eslint-disable */
 
+
+// Open connection to the restaurant-db database
 const idbPromise = idb.open('restaurant-db', 1, (upgradeDb) => {
-  upgradeDb.createObjectStore('restaurant-store', {
-    keyPath: 'id'
-  });
+  switch (upgradeDb.oldVersion) {
+    case 0:
+      upgradeDb.createObjectStore('restaurant-store', {
+      keyPath: 'id'
+    });
+  }
 });
 
 /**
@@ -23,42 +28,43 @@ class DBHelper {
    * Fetch all restaurants using Fetch API
    */
   static fetchRestaurants(callback) {
-    fetch(DBHelper.DATABASE_URL)
-      .then((res) => {
-        res.json()
-          .then((restaurants) => {
-            // Save JSON into indexedDB
-            idbPromise.then(db => {
-              const tx = db.transaction('restaurant-store', 'readwrite');
-              // Loop through the restaurant list and store in the db
-              restaurants.forEach((restaurant) => {
-                tx.objectStore('restaurant-store').put(restaurant);
-              });
-              return tx.complete;
-            });
-            return callback(null, restaurants);
-          })
-          .catch((err) => {
-            return Promise.reject(Error(err));
-          });
-      }).catch(()=>{
-        idbPromise.then(db => {
-          const tx = db.transaction('restaurant-store', 'readwrite');
-          return tx.objectStore('restaurant-store').getAll();
-        }).then((restaurants) => {
-          return callback(null, restaurants);
-        });
+    idbPromise.then(db => {
+      const tx = db.transaction('restaurant-store', 'readwrite');
+      tx.objectStore('restaurant-store').getAll().then(restaurantsFromDb => {
+          if (restaurantsFromDb.length > 0) {
+            return callback(null, restaurantsFromDb);
+          }
+          else {
+            fetch(DBHelper.DATABASE_URL)
+              .then((res) => {
+                res.json()
+                  .then((restaurants) => {
+                    // Save JSON into indexedDB
+                    idbPromise.then(db => {
+                      const tx = db.transaction('restaurant-store', 'readwrite');
+                      // Loop through the restaurant list and store in the db
+                      restaurants.forEach((restaurant) => {
+                        tx.objectStore('restaurant-store').put(restaurant);
+                      });
+                      return tx.complete;
+                    });
+                    return callback(null, restaurants);
+                  })
+                  .catch((err) => {
+                    return Promise.reject(Error(err));
+                  });
+              })
+              // .catch(()=>{
+              //   idbPromise.then(db => {
+              //     const tx = db.transaction('restaurant-store', 'readwrite');
+              //     return tx.objectStore('restaurant-store').getAll();
+              //   }).then((restaurants) => {
+              //     return callback(null, restaurants);
+              //   });
+              // });
+          }
       });
-      // .catch(() => {
-      //   // If offline and no response, we want to load from indexedDB
-      //   console.log('test');
-      //   idbPromise.then(db => {
-      //     const tx = db.transaction('restaurant-store');
-      //     tx.objectStore('restaurant-store').getAll();
-      //   }).then(restaurants => {
-      //     return callback(null, restaurants);
-      //   });
-      // });
+    });
   }
 
   /**
