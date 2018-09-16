@@ -71,7 +71,8 @@ nav {
   background-color: #eee;
   font-size: 17px;
   margin: 0;
-  width: 100%;
+  max-width: 100%;
+  position: relative;
   li {
     /* Display list items side by side */
     display: inline;
@@ -205,7 +206,7 @@ nav {
   }
   #footer {
     bottom: 0;
-    position: absolute;
+    position: fixed;
     width: 100%;
   }
   .restaurant-name {

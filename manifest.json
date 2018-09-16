@@ -1,10 +1,27 @@
 {
-  "short_name": "NYRestaurants",
-  "name": "NYRestaurants",
-  "start_url": "/home",
+  "short_name": "NYEats",
+  "name": "NY Eateries",
+  "start_url": "index.html",
   "background_color": "#3367D6",
   "display": "standalone",
   "scope": "/home",
   "theme_color": "#3367D6",
-  "description": "A Yelp-like progressive web app"
+  "description": "A Yelp-like progressive web app",
+  "icons": [{
+        "src": "/img/menu-64.png",
+        "sizes": "64x64",
+        "type": "image/png"
+    }, {
+        "src": "/img/menu-128.png",
+        "sizes": "128x128",
+        "type": "image/png"
+    }, {
+        "src": "/img/menu-256.png",
+        "sizes": "256x256",
+        "type": "image/png"
+    }, {
+        "src": "/img/menu-512.png",
+        "sizes": "512x512",
+        "type": "image/png"
+    }]
 }

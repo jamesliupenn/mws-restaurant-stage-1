@@ -67,7 +67,8 @@ nav {
   background-color: #eee;
   font-size: 17px;
   margin: 0;
-  width: 100%; }
+  max-width: 100%;
+  position: relative; }
   #breadcrumb li {
     /* Display list items side by side */
     display: inline; }
@@ -192,7 +193,7 @@ nav {
 
 .inside #footer {
   bottom: 0;
-  position: absolute;
+  position: fixed;
   width: 100%; }
 
 .inside .restaurant-name {
