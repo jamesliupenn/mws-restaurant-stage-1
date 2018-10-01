@@ -192,6 +192,25 @@ createRestaurantHTML = (restaurant) => {
   name.innerHTML = restaurant.name;
   li.append(name);
 
+  // Create the Favorite Element
+  const favorite = document.createElement('div');
+  favorite.className = 'favorite-icon';
+  // Checks the flag 'is_favorite' from the API
+  const isFavorite = (restaurant['is_favorite']) ? true : false;
+  // Create the Like button and style it with the image
+  const likeButton = document.createElement('button');
+  likeButton.style.background = isFavorite ? 
+    `url('../img/002-favorite-1.svg') no-repeat` : 
+    `url('../img/001-favorite.svg') no-repeat`;
+
+  likeButton.innerHTML = '+';
+  likeButton.id = 'favorite-icon-' + restaurant.id;
+  likeButton.addEventListener('click', (event) => {
+    DBHelper.markAsFavorite(restaurant.id);
+  });
+  favorite.append(likeButton);
+  li.append(favorite);
+
   const neighborhood = document.createElement('p');
   neighborhood.innerHTML = restaurant.neighborhood;
   li.append(neighborhood);

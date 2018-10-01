@@ -54,14 +54,6 @@ class DBHelper {
                     return Promise.reject(Error(err));
                   });
               })
-              // .catch(()=>{
-              //   idbPromise.then(db => {
-              //     const tx = db.transaction('restaurant-store', 'readwrite');
-              //     return tx.objectStore('restaurant-store').getAll();
-              //   }).then((restaurants) => {
-              //     return callback(null, restaurants);
-              //   });
-              // });
           }
       });
     });
@@ -236,6 +228,29 @@ class DBHelper {
     return marker;
   } */
 
+
+  static saveToDb() {
+
+  }
+
+
+  static markAsFavorite(id) {
+    console.log('DB: clicked', id);
+    idbPromise.then(db => {
+      const tx = db.transaction('restaurant-store', 'readwrite');
+      const store = tx.objectStore('restaurant-store');
+      let entry = store.get(id)
+      entry.onsuccess = (() => {
+        let state_of_fav = entry.is_favorite ? false : true;
+        console.log('success:', entry.is_favorite);
+        var data = entry;
+        // data.is_favorite = state_of_fav;
+        // store.put(data);
+        console.log(store[id]);
+      });
+      return tx.complete;
+    });
+  }
 }
 
 

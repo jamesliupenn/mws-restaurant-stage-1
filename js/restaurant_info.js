@@ -110,6 +110,23 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   const name = document.getElementById('restaurant-name');
   name.innerHTML = restaurant.name;
 
+  const favorite = document.getElementById('favorite-icon');
+  // Checks the flag 'is_favorite' from the API
+  const isFavorite = (restaurant['is_favorite']) ? true : false;
+  // Create the Like button and style it with the image
+  const likeButton = document.createElement('button');
+  likeButton.style.background = isFavorite ? 
+    `url('../img/002-favorite-1.svg') no-repeat` : 
+    `url('../img/001-favorite.svg') no-repeat`;
+
+  likeButton.innerHTML = '+';
+  likeButton.id = 'favorite-icon-' + restaurant.id;
+  likeButton.addEventListener('click', (event) => {
+    DBHelper.markAsFavorite(restaurant.id);
+  });
+  favorite.append(likeButton);
+
+
   const address = document.getElementById('restaurant-address');
   address.innerHTML = restaurant.address;
 
@@ -130,6 +147,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   }
   // fill reviews
   fillReviewsHTML();
+
 }
 
 /**
@@ -165,6 +183,7 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
 
 /**
  * Create all reviews HTML and add them to the webpage.
+ * Need to change this to fetching it from the API
  */
 fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   const container = document.getElementById('reviews-container');
@@ -242,4 +261,7 @@ getParameterByName = (name, url) => {
   if (!results[2])
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+setFavorite = (id, state) => {
 }
