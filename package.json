@@ -17,7 +17,12 @@
   },
   "homepage": "https://github.com/jamesliupenn/mws-restaurant-stage-1#readme",
   "dependencies": {
-    "gulp-jasmine-phantom": "^3.0.0"
+    "browser-sync": "^2.26.3",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^6.0.0",
+    "gulp-eslint": "^5.0.0",
+    "gulp-jasmine-phantom": "^3.0.0",
+    "gulp-sass": "^4.0.2"
   },
   "devDependencies": {
     "gulp-concat": "^2.6.1",

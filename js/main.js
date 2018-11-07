@@ -98,7 +98,7 @@ initMap = () => {
     scrollWheelZoom: false
   });
   L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.jpg70?access_token={mapboxToken}', {
-    mapboxToken: '<map_token>',
+    mapboxToken: '<map_api_token>',
     maxZoom: 18,
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/" tabindex="-1">OpenStreetMap</a> contributors, ' +
       '<a href="https://creativecommons.org/licenses/by-sa/2.0/" tabindex="-1">CC-BY-SA</a>, ' +
@@ -176,6 +176,8 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
  */
 createRestaurantHTML = (restaurant) => {
   const li = document.createElement('li');
+  const div = document.createElement('div');
+  div.className = 'img-container';
 
   const image = document.createElement('img');
   image.className = 'restaurant-img';
@@ -185,12 +187,7 @@ createRestaurantHTML = (restaurant) => {
     DBHelper.imageUrlForRestaurant(restaurant) + '-400.jpg' + ' 400w, ' +
     DBHelper.imageUrlForRestaurant(restaurant) + '-800.jpg' + ' 800w'
     );
-  li.append(image);
-
-  const name = document.createElement('h2');
-  name.setAttribute('class', 'restaurant-name');
-  name.innerHTML = restaurant.name;
-  li.append(name);
+  div.append(image);
 
   // Create the Favorite Element
   const favorite = document.createElement('div');
@@ -203,13 +200,28 @@ createRestaurantHTML = (restaurant) => {
     `url('../img/002-favorite-1.svg') no-repeat` : 
     `url('../img/001-favorite.svg') no-repeat`;
 
-  likeButton.innerHTML = '+';
+  likeButton.innerHTML = isFavorite ? 
+    restaurant.name + 'is a favorite' : 
+    restaurant.name + 'is not a favorite';
+
   likeButton.id = 'favorite-icon-' + restaurant.id;
-  likeButton.addEventListener('click', (event) => {
-    DBHelper.markAsFavorite(restaurant.id);
+
+  // Adding the Like Button event listener, the button click triggers
+  // clickOnFavorite fxn
+  likeButton.onclick = ((event) => {
+    // console.log(restaurant.id, isFavorite);
+    clickOnFavorite(restaurant.id, !isFavorite);
   });
+
   favorite.append(likeButton);
-  li.append(favorite);
+  div.append(favorite);
+
+  li.append(div);
+
+  const name = document.createElement('h2');
+  name.setAttribute('class', 'restaurant-name');
+  name.innerHTML = restaurant.name;
+  li.append(name);
 
   const neighborhood = document.createElement('p');
   neighborhood.innerHTML = restaurant.neighborhood;
@@ -252,14 +264,24 @@ addMarkersToMap = (restaurants = self.restaurants) => {
   const zoomout = document.getElementsByClassName('leaflet-control-zoom-out');
   zoomout[0].setAttribute('tabindex', '-1');
 } 
-/* addMarkersToMap = (restaurants = self.restaurants) => {
-  restaurants.forEach(restaurant => {
-    // Add marker to the map
-    const marker = DBHelper.mapMarkerForRestaurant(restaurant, self.map);
-    google.maps.event.addListener(marker, 'click', () => {
-      window.location.href = marker.url
-    });
-    self.markers.push(marker);
-  });
-} */
 
+/**
+ * Sending requests upon button click on the favorite button
+ */
+clickOnFavorite = (id, state) => {
+  // Change the button state and modify the DOM
+  const likeButton = document.getElementById("favorite-icon-" + id);
+  likeButton.style.background = state ? 
+    `url('../img/002-favorite-1.svg') no-repeat` : 
+    `url('../img/001-favorite.svg') no-repeat`;
+
+  likeButton.onclick = ((event) => {
+    clickOnFavorite(id, !state);
+  });
+
+  // Update the Restaurant API
+  Api.updateIsFavorite(id, state);
+
+  // Update the IDB
+  DBHelper.markAsFavorite(id);
+}

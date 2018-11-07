@@ -60,25 +60,6 @@ class DBHelper {
   }
 
   /**
-   * Fetch all restaurants.
-   */
-  // static fetchRestaurants(callback) {
-  //   let xhr = new XMLHttpRequest();
-  //   xhr.open('GET', DBHelper.DATABASE_URL);
-  //   xhr.onload = () => {
-  //     if (xhr.status === 200) { // Got a success response from server!
-  //       const json = JSON.parse(xhr.responseText);
-  //       const restaurants = json.restaurants;
-  //       callback(null, restaurants);
-  //     } else { // Oops!. Got an error from server.
-  //       const error = (`Request failed. Returned status of ${xhr.status}`);
-  //       callback(error, null);
-  //     }
-  //   };
-  //   xhr.send();
-  // }
-
-  /**
    * Fetch a restaurant by its ID.
    */
   static fetchRestaurantById(id, callback) {
@@ -217,36 +198,19 @@ class DBHelper {
     marker.addTo(newMap);
     return marker;
   } 
-  /* static mapMarkerForRestaurant(restaurant, map) {
-    const marker = new google.maps.Marker({
-      position: restaurant.latlng,
-      title: restaurant.name,
-      url: DBHelper.urlForRestaurant(restaurant),
-      map: map,
-      animation: google.maps.Animation.DROP}
-    );
-    return marker;
-  } */
-
-
-  static saveToDb() {
-
-  }
-
 
   static markAsFavorite(id) {
-    console.log('DB: clicked', id);
+    const URL = "http://localhost:1337/restaurants/" + id + "/?is_favorite=";
     idbPromise.then(db => {
       const tx = db.transaction('restaurant-store', 'readwrite');
       const store = tx.objectStore('restaurant-store');
-      let entry = store.get(id)
-      entry.onsuccess = (() => {
+      store.get(id).then((entry) => {
+        // Temporarily hold the entry and the new state of the heart sign
         let state_of_fav = entry.is_favorite ? false : true;
-        console.log('success:', entry.is_favorite);
-        var data = entry;
-        // data.is_favorite = state_of_fav;
-        // store.put(data);
-        console.log(store[id]);
+        let data = entry;
+        // Alter the entry with the new state and POST it to IDB
+        data.is_favorite = state_of_fav;
+        store.put(data);
       });
       return tx.complete;
     });

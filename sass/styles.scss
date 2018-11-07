@@ -162,6 +162,7 @@ nav {
       line-height: 1.3;
       margin: 20px 0 10px;
       text-transform: uppercase;
+      display: inline-block;
     }
     a {
       background-color: #E87000;
@@ -174,9 +175,13 @@ nav {
       text-decoration: none;
       text-transform: uppercase;
     }
-    .favorite-icon {
+    .img-container .favorite-icon {
+      transform: translate(0%, -100%);
       button {
         border-style: none;
+        outline: none;
+        color: transparent; 
+        height: 2.2em;
       }
     }
 
@@ -224,6 +229,7 @@ nav {
     margin: 15px 0 30px;
     text-transform: uppercase;
     line-height: 1.1;
+    display: inline-block;
   }
 }
 
@@ -234,8 +240,14 @@ nav {
   border-bottom: 1px solid #d9d9d9;
   border-top: 1px solid #fff;
   #favorite-icon {
+    display: inline-block;
+    margin-left: 1em;
+    vertical-align: text-bottom;
     button {
       border-style: none;
+      outline: none;
+      color: transparent; 
+      height: 2.2em;
     }
   }
 }
@@ -282,6 +294,51 @@ nav {
     padding-bottom: 1pt;
     font-family: 'Courgette', cursive;
   }
+  .forms-container {
+    text-align: center;
+    h3 {
+      font-family: 'Courgette', cursive;
+      color: red;
+    }
+    #input-name {
+      display: inline-block;
+      width: 25%;
+      font-size: 15px;
+    }
+    #input-review {
+      display: inline-block;
+      width: 40%;
+      font-size: 15px;
+    }
+    .rating-class {
+      width: 30px;
+      height: 30px;
+      border-radius: 5px;
+      background-color: white;
+    }
+    .rating-class:hover {
+      background-color: red;
+    }
+    #rating-button1:hover ~ .rating-class{
+      background-color: red;
+    }
+    #rating-button2:hover ~ .rating-class{
+      background-color: red;
+    }
+    #rating-button3:hover ~ .rating-class{
+      background-color: red;
+    }
+    #rating-button4:hover ~ .rating-class{
+      background-color: red;
+    }
+    #rating-button5:hover ~ .rating-class{
+      background-color: red;
+    }
+    #submit-button {
+
+    }
+  }
+
 }
 
 #restaurant-img {
